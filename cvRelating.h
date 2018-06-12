@@ -1,0 +1,69 @@
+#pragma once
+#include <qdebug.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/features2d/features2d.hpp>
+#include <opencv2\xfeatures2d\nonfree.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
+#include <iostream>
+
+using namespace cv;
+using namespace std;
+class cvRelating
+{
+public:
+	cvRelating();
+	~cvRelating();
+	void LoadImage();
+	void ImageTransform();
+	void FeatureDection();
+	void Matching();
+	void Rectify();
+	void Correspondence();
+	void CameraCalibration();
+	unsigned int getWidth(unsigned int P);
+	unsigned int getHeight(unsigned int P);
+	unsigned int getChannel(unsigned int P);
+	unsigned char* getData(unsigned int P);
+
+	
+	typedef struct matRelating 
+	{
+			cv::Mat Image;
+			cv::Mat Descriptor;
+			cv::Mat H_Matrix;
+			Ptr<Feature2D> Dector;
+			std::vector<cv::KeyPoint> keypoints;
+			std::vector<cv::Point2f> goodKeypoints;
+	}MatRelating;
+	typedef struct flann_matching
+	{
+		cv::FlannBasedMatcher Mathcer;
+		std::vector< DMatch > Matches;
+		std::vector< DMatch > GoodMat;
+	}FlannMatch;
+	typedef struct undistortionMat
+	{
+		cv::Mat Map1;
+		cv::Mat Map2;
+	}UndistortionMat;
+	typedef struct cameraModel
+	{
+		cv::Mat cameraMatrix;
+		cv::Mat distCoeffs;
+	}CameraModel;
+private:
+
+	MatRelating L_Mat;
+	MatRelating R_Mat;
+	UndistortionMat L_uMat;
+	UndistortionMat R_uMat;
+	MatRelating MatchMat;
+	CameraModel L_Model;
+	CameraModel R_Model;
+	cv::Mat FMatrix;
+	FlannMatch match;
+	const float calibrationDimensions = 0.01905f;
+	const Size chessBroadSize = Size(6, 9);
+};
